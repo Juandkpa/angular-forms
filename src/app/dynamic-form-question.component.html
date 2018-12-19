@@ -1,0 +1,32 @@
+<div [formGroup]="form">
+    <label [attr.for]="question.key">{{question.label}}</label>
+   
+    <div [ngSwitch]="question.controlType">
+   
+      <input *ngSwitchCase="'textbox'" [formControlName]="question.key"
+              [id]="question.key" [type]="question.type">
+   
+      <select [id]="question.key" *ngSwitchCase="'dropdown'" [formControlName]="question.key">
+        <option *ngFor="let opt of question.options" [value]="opt.key">{{opt.value}}</option>
+      </select>
+
+      <div *ngSwitchCase="'autocomplete'">
+        <mat-form-field class="example-full-width" >
+          <input matInput placeholder="Choose a user" [matAutocomplete]="auto" [formControlName]="question.key">
+        </mat-form-field>
+        <!--span>Your choice is: {{form.get('userInput').value | json}}</span-->
+      
+        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+            <mat-option *ngFor="let user of (filteredUsers | async)?.results" [value]="user">
+              <span>{{ user.name }}</span>
+              <small> | ID: {{user.id}}</small>
+            </mat-option>
+        </mat-autocomplete>
+      </div>      
+      
+      
+   
+    </div> 
+   
+    <div class="errorMessage" *ngIf="!isValid">{{question.label}} is required</div>
+  </div>
